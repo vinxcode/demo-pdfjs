@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { PDFDocument, rgb } from 'pdf-lib';
+import { useStore } from './useStore'
 
 const SignaturePad = () => {
     const sigCanvas = useRef({});
     const [pdfFile, setPdfFile] = useState(null);
-
+    const { updateIsOpen } = useStore()
+    const [name, setName] = useState('')
 
     const clear = () => {
         sigCanvas.current.clear();
@@ -15,9 +17,6 @@ const SignaturePad = () => {
         const signature = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
         return signature;
     };
-
-    // STARTING CODE FOR PDF MANAGEMENT
-    // ***************************************************************
 
     const handlePdfUpload = (event) => {
         const file = event.target.files[0];
@@ -32,39 +31,34 @@ const SignaturePad = () => {
     };
 
     const insertSignatureInPdf = async () => {
-        
+
         if (!pdfFile) {
             alert('Please upload a PDF first.');
             return;
         }
 
-        // Cargar el PDF usando pdf-lib
         const pdfDoc = await PDFDocument.load(pdfFile);
         const pages = pdfDoc.getPages();
         const firstPage = pages[0];
 
-        // Obtener la firma en base64
         const signatureImageBase64 = saveSignature();
 
-        // Convertir la imagen base64 a un formato compatible con pdf-lib
         const signatureImageBytes = await fetch(signatureImageBase64).then(res => res.arrayBuffer());
         const signatureImage = await pdfDoc.embedPng(signatureImageBytes);
 
-        // Establecer el tamaño y la posición donde se colocará la firma
-        const signatureDims = signatureImage.scale(0.5); // Ajusta el tamaño de la firma aquí
+        const signatureDims = signatureImage.scale(0.5);
         firstPage.drawImage(signatureImage, {
-            x: 200, // Coordenada X (ajustar según necesidad)
-            y: 260, // Coordenada Y (ajustar según necesidad)
+            x: 200,
+            y: 260,
             width: signatureDims.width,
             height: signatureDims.height,
         });
 
-        // Descargar el PDF modificado
         const pdfBytes = await pdfDoc.save();
         download(pdfBytes, "signed_document.pdf", "application/pdf");
+        updateIsOpen(false)
     };
 
-    // Función para descargar el archivo PDF
     const download = (data, filename, mime) => {
         const blob = new Blob([data], { type: mime });
         const link = document.createElement('a');
@@ -75,6 +69,11 @@ const SignaturePad = () => {
 
     return (
         <section className='flex flex-col gap-2 mx-auto w-full'>
+            <input type="text" name='name'
+                placeholder="Introduce your name"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                className='h-12 w-full p-3 border-b-2 border-b-gray-600' />
             <h3>Draw your signature</h3>
             <SignatureCanvas
                 ref={sigCanvas}
@@ -88,7 +87,7 @@ const SignaturePad = () => {
             <h3>Upload a PDF</h3>
             <input type="file" accept="application/pdf" onChange={handlePdfUpload} />
             <button onClick={insertSignatureInPdf}
-            className='bg-gray-600 px-10 py-2 rounded-lg text-white font-light hover:bg-gray-500'>Sign and Download</button>
+                className='bg-gray-600 px-10 py-2 rounded-lg text-white font-light hover:bg-gray-500'>Insert signature</button>
         </section>
     );
 };
