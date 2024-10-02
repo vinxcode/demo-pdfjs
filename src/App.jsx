@@ -27,7 +27,7 @@ function App() {
       <h1 class="text-center text-gray-600 text-4xl font-black mt-20">Demo Signature with Pdf.js</h1>
       <button className='bg-gray-600 px-10 py-2 text-white font-semibold rounded-lg mx-auto'
         onClick={handleButton}
-      >Open Modal</button>
+      >Sign document</button>
     </div>
   )
 }
