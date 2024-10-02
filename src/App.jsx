@@ -15,7 +15,7 @@ function App() {
     backdrop-blur-lg'>
       <main className=" w-full md:w-4/5 lg:w-1/2 mx-auto p-7 md:p-20 bg-white shadow-lg rounded-xl flex flex-col gap-5 relative z-10">
         <section className='w-full md:w-3/4 lg:w-2/3 mx-auto flex flex-col gap-5 '>
-
+          <h1 class="text-center text-gray-600 text-4xl font-black">Demo Signature with Pdf.js</h1>
           <Canvas />
 
         </section>

@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { useStore } from './useStore'
+import UploadImage from './UploadImage'
 
 const SignaturePad = () => {
     const sigCanvas = useRef({});
@@ -85,7 +86,9 @@ const SignaturePad = () => {
                 {/* <button className='bg-gray-600 px-10 py-2 rounded-lg text-white font-light hover:bg-gray-500' onClick={save}>Save</button> */}
             </div>
             <h3>Upload a PDF</h3>
-            <input type="file" accept="application/pdf" onChange={handlePdfUpload} />
+            <input type="file" accept="application/pdf" onChange={handlePdfUpload}/>
+            <h3>Upload an image</h3>
+            <UploadImage/>
             <button onClick={insertSignatureInPdf}
                 className='bg-gray-600 px-10 py-2 rounded-lg text-white font-light hover:bg-gray-500'>Insert signature</button>
         </section>
